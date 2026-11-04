@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.*
+*.pem
+*.key
+.agent-metrics/
+.claude/settings.local.json
+.tsbuildinfo
+coverage/
+playwright-report/
+test-results/

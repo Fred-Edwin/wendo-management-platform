@@ -1,0 +1,51 @@
+name: Task
+description: One unit of work for one agent. Acceptance criteria must be checkable.
+title: "[feature] short outcome"
+labels: ["task"]
+body:
+  - type: input
+    id: feature
+    attributes:
+      label: Feature
+      description: Folder name, for example floor/payments or company/staff. Write "new" for a new feature.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What and why
+      description: The behaviour wanted and who needs it, in plain words.
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: One checkbox per condition that can be verified by a command, a test or an outline from `pnpm see`.
+      value: |
+        - [ ] 
+        - [ ] 
+        - [ ] `pnpm check <feature> --db` exits 0
+    validations:
+      required: true
+  - type: textarea
+    id: rules
+    attributes:
+      label: Domain rules touched
+      description: Rule numbers from docs/domain-model.md section 6 (money, payments, approvals, branch walls, offline). Write "none" if none.
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Agent mode
+      options:
+        - Light (logic and tests only)
+        - Full (needs the dev server and a screen)
+    validations:
+      required: true
+  - type: textarea
+    id: out
+    attributes:
+      label: Out of scope
+      description: What this task must not change (for example core/).

@@ -1,0 +1,10 @@
+# Keeps the pinned GitHub Actions current. Add the "npm" ecosystem when package.json exists (foundation build).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories: ["/", "/.github/actions/*"]
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 14   # never adopt a release younger than two weeks
+    open-pull-requests-limit: 3

@@ -1,0 +1,160 @@
+# CI for the Wendo Management Platform. Design: docs/agent-experience.md sections 1 and 9.
+# Until the foundation build creates package.json, only the `gate` job runs and every other job is skipped.
+# A skipped required check counts as passing, so this file is safe to merge before any code exists.
+# The scripts used below (check:ci, test:db, build, size, test:perf, test:e2e, test:compat) are created by the foundation build.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push cancels the older run for the same branch or pull request (saves CI minutes).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      code: ${{ steps.g.outputs.code }}
+      data: ${{ steps.g.outputs.data }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: g
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -f package.json ]; then echo "code=true" >> "$GITHUB_OUTPUT"; else echo "code=false" >> "$GITHUB_OUTPUT"; fi
+          # The compatibility job runs only when data, sync or db code changed (always on pushes to main).
+          if [ "$EVENT" = "pull_request" ]; then
+            if git diff --name-only "$BASE"...HEAD | grep -Eq '(/data/|^core/sync/|^core/db/|^db/)'; then echo "data=true" >> "$GITHUB_OUTPUT"; else echo "data=false" >> "$GITHUB_OUTPUT"; fi
+          else
+            echo "data=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  check:
+    name: check
+    needs: gate
+    if: needs.gate.outputs.code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm check:ci # type check, Biome, tools/arch, lint-sql, all unit tests
+
+  db:
+    name: db
+    needs: gate
+    if: needs.gate.outputs.code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm test:db # real-database tests, the global row-security test, the rule-break suite
+
+  build:
+    name: build
+    needs: gate
+    if: needs.gate.outputs.code == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm build # Vite build and server bundle
+      - run: pnpm size # size-limit: P1 130 kB, P2 35 kB per route, P3 15 kB CSS
+
+  perf:
+    name: perf
+    needs: [gate, build]
+    # Only on pull requests that are ready for review (saves minutes).
+    if: needs.gate.outputs.code == 'true' && github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:perf # Playwright and Lighthouse CI at 4x CPU slowdown: budgets P4 to P11
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: perf-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  e2e:
+    name: e2e
+    needs: [gate, build]
+    if: needs.gate.outputs.code == 'true' && github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e # order to kitchen to payment to receipt, the offline journey, the two-context kitchen test
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: e2e-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  compat:
+    name: compat
+    needs: gate
+    if: needs.gate.outputs.code == 'true' && needs.gate.outputs.data == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm test:compat # the new cloud against the N-1 and N-2 branch versions
