@@ -32,9 +32,7 @@
       "Bash(gh issue list:*)",
       "Bash(ls:*)",
       "Bash(rg:*)",
-      "Bash(wc:*)"
-    ],
-    "ask": [
+      "Bash(wc:*)",
       "Bash(git push:*)",
       "Bash(pnpm add:*)",
       "Bash(pnpm remove:*)",
