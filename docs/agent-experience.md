@@ -132,6 +132,7 @@ Rule numbers are from `domain-model.md` section 6. "Rule-break" means the CI sui
 
 - Numbers checked on 2026-11-04: Free gives about 2,000 and Team about 3,000 Linux 2-core minutes a month (the real unit is $12 and $18 of compute at $0.006 a minute). Extra minutes cost $0.006.
 - Estimate per pull request, all jobs: about 25 minutes. Per push: about 10 minutes (`check`, `db`, `build`). At 3 agents and about 4 pull requests a day this is about 2,200 minutes a month, above Free, inside Team with margin. Recommendation: **Team**, also for required checks on a private repository.
+- The repository is public for now (free minutes and free required checks) and goes private after Team is bought; buy Team first, because protection is not enforced on a private repository without a paid plan.
 - Savings: cache the pnpm store and Playwright browsers; cancel superseded runs; path filters; `perf` and `e2e` only on pull requests that are ready for review; `compat` only when `data/`, `core/sync` or `core/db` change; `image` on tags only.
 
 ## 10. Postponed work, with what it measures and when it runs
