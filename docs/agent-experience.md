@@ -125,7 +125,7 @@ Rule numbers are from `domain-model.md` section 6. "Rule-break" means the CI sui
 5. **pnpm 11 exits with code 1 after a successful install when a script was ignored** (`ERR_PNPM_IGNORED_BUILDS`). An agent can read that as a failed install. Document it and use `allowBuilds`.
 6. **Slow or failing downloads:** one tarball timed out three times on a poor network. Agents do not install packages. A shared pnpm store and `fetch-timeout` settings go in `.npmrc`.
 7. **Kysely insert types:** `Generated<>` columns are not accepted by `insert().values()`. Use `Insertable<>` helpers; the generator's `queries` stub includes one.
-8. **Instructions are not enforcement:** a test agent told to run nothing used a shell command to write its file. Permissions and CI enforce, not prompts.
+8. **Instructions are not enforcement:** a test agent told to run nothing used a shell command to write its file. Only tools enforce, not prompts: CI, and a block added when a real problem needs one.
 9. **The laptop is already busy:** about 8.4 GB used and 4 GB of swap before any agent runs.
 
 ## 9. Pipeline summary (detail in the pipeline files)
@@ -152,7 +152,7 @@ Rule numbers are from `domain-model.md` section 6. "Rule-break" means the CI sui
 
 ## 11. Hooks and the Scorecard
 
-**Hooks: none for now** (owner decision, 2026-11-05). A hook is added only when a real, repeated problem needs one, not in advance. What was learned while testing a first set is in decision log K-13, so the next one starts from it. The permission rules in `.claude/settings.json` (allow, ask first, deny) stay.
+**Hooks: none for now** (owner decision, 2026-11-05). A hook is added only when a real, repeated problem needs one, not in advance. What was learned while testing a first set is in decision log K-13, so the next one starts from it. The permission rules in `.claude/settings.json` stay (allow and ask first). There are no deny rules for now (owner decision, 2026-11-05): a block is added only when a real problem shows it is needed.
 
 **Scorecard.** Reviewed after the first 3 features, then monthly. Each review adds a dated row to the decision log. Raw data: `pnpm check` and `pnpm evidence` record their own time and result to a local log (not committed), plus `gh run list` and `gh pr list --json`. A `pnpm metrics` command (foundation build) prints the summary.
 

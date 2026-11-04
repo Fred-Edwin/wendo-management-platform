@@ -23,7 +23,7 @@ These tools are specified, and some do not exist yet. If a command is missing, s
 ## Rules
 1. Work in your own worktree (`pnpm agent:init`). One task, one branch, one pull request.
 2. Light mode by default: edit and run `pnpm check`. Start the dev server and a browser only for a screen change. Limits: 3 full agents or 6 light agents on this laptop.
-3. Never run full test suites, production builds, Playwright suites or Lighthouse on the laptop. CI runs them. Read results with `gh pr checks`.
+3. Do not run full test suites, production builds, Playwright suites or Lighthouse on the laptop (nothing blocks it, so this rule is on you). CI runs them. Read results with `gh pr checks`.
 4. File names have fixed endings: `.command.ts`, `.command.server.ts`, `.query.ts`, `.screen.tsx`, `.event.ts`, `.handler.ts`, `.print.ts`, `.job.ts`. Server files (`.server.ts`) are never imported by client code.
 5. A feature imports only `core/*` and other features' `public.ts`. Floor code never imports company features.
 6. Money goes through `core/money` only. No `*`, `/` or `parseFloat` on money in domain code.

@@ -43,18 +43,6 @@
       "Bash(gh pr merge:*)",
       "Bash(gh issue create:*)",
       "Bash(docker:*)"
-    ],
-    "deny": [
-      "Bash(git push --force:*)",
-      "Bash(git push -f:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(pnpm build:*)",
-      "Bash(pnpm test:*)",
-      "Bash(npx playwright test:*)",
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(**/*.pem)",
-      "Read(**/*.key)"
     ]
   }
 }
