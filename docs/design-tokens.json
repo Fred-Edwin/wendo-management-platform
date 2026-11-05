@@ -1,0 +1,624 @@
+{
+ "_meta": {
+  "status": "APPROVED by the owner on 2026-11-05 (token sheet v2, then components, patterns and the shell through the end of Session 5). Source of truth for tokens; the foundation build generates core/ui/tokens.css from this file. Not product code. Components and patterns are described in docs/design-system.md.",
+  "contrastMethod": "WCAG 2.2 relative luminance, unrounded. Gradients measured at the lightest stop.",
+  "theme": "light only",
+  "decided": [
+   "neutrals: COOL (2026-11-05), same lightness as the base warm greys, hue 255",
+   "corners: 0 tables and panes, 4 controls, 6 floating layers, full circle for avatars, dots, count badges",
+   "no grain",
+   "sidebar S1, phone header H1, avatar V4, button B0",
+   "progress fills: brown and olive both kept (2026-11-05)",
+   "office controls are ALWAYS 28 px with 13 px text, whatever the pointer; size follows the layout (office, phone under 768 px, floor device), never the pointer type (2026-11-05)",
+   "inputs, tabs, menu items and checkboxes 4 px; buttons 0 px; floating layers 6 px (2026-11-05)",
+   "one page treatment: every page fills the width with 24 px gutters; desktop forms open in a 520 px right panel (2026-11-05)",
+   "PIN is 4 digits everywhere, no lock-out, no delay, System Admin notified after 10 wrong tries, weak PINs allowed (2026-11-05, to be hardened later)"
+  ],
+  "approvedWithSheet": [
+   "input, tab and menu-item corners 4px (can be changed to 0 later, one value)",
+   "elevation values (judged on the sheet; revisit on real screens)"
+  ],
+  "stillUnmeasured": [
+   "Geist subset size against the 30 kB budget (owner declined the download; pin v1.8.2)",
+   "Base UI, Motion, Sonner, cmdk and the virtual list library against the 130 kB JS and 15 kB CSS budgets",
+   "press feel on a real phone and the press scale (0.98 drawn, 0.97 considered); contrast in bright light, kitchen reading distance",
+   "backdrop blur cost on weak devices",
+   "the 12 px tab labels and status text in sunlight; the 28 px logo badge on the sidebar",
+   "Lucide icon names and paths (written from memory, UNVERIFIED against the package)",
+   "full contrast table and size audit were skipped by the owner in Session 5"
+  ]
+ },
+ "color": {
+  "espresso": {
+   "50": {
+    "value": "#F8F2EC"
+   },
+   "100": {
+    "value": "#EEDDCC"
+   },
+   "200": {
+    "value": "#DDBE9E"
+   },
+   "400": {
+    "value": "#B98A5E"
+   },
+   "600": {
+    "value": "#B0610F"
+   },
+   "650": {
+    "value": "#6E421F"
+   },
+   "700": {
+    "value": "#693C1B"
+   },
+   "750": {
+    "value": "#5B3417"
+   },
+   "800": {
+    "value": "#4E2C14"
+   },
+   "900": {
+    "value": "#33200F"
+   },
+   "950": {
+    "value": "#241609"
+   }
+  },
+  "caramel": {
+   "100": {
+    "value": "#FCF2E4"
+   },
+   "300": {
+    "value": "#EFCF9E"
+   },
+   "500": {
+    "value": "#D9A65E"
+   },
+   "600": {
+    "value": "#B5823E"
+   },
+   "700": {
+    "value": "#8C6230"
+   }
+  },
+  "state": {
+   "success": {
+    "fg": {
+     "value": "#2F6438"
+    },
+    "bg": {
+     "value": "#EEF4EC"
+    },
+    "border": {
+     "value": "#CADFC6"
+    }
+   },
+   "warning": {
+    "fg": {
+     "value": "#8A5A16"
+    },
+    "bg": {
+     "value": "#FBF2E4"
+    },
+    "border": {
+     "value": "#E7D3AC"
+    }
+   },
+   "error": {
+    "fg": {
+     "value": "#97281D"
+    },
+    "bg": {
+     "value": "#FBEDEB"
+    },
+    "border": {
+     "value": "#E6BEB7"
+    }
+   },
+   "info": {
+    "fg": {
+     "value": "#2C5670"
+    },
+    "bg": {
+     "value": "#ECF2F5"
+    },
+    "border": {
+     "value": "#C1D4DF"
+    }
+   },
+   "words": {
+    "success": [
+     "Approved",
+     "Active",
+     "Paid",
+     "Saved",
+     "Verified"
+    ],
+    "warning": [
+     "Waiting",
+     "Pending",
+     "Due soon",
+     "Waiting to send"
+    ],
+    "error": [
+     "Overdue",
+     "Blocked",
+     "Failed",
+     "Flagged"
+    ],
+    "info": [
+     "Sending",
+     "New",
+     "In review"
+    ],
+    "neutral": [
+     "Suspended",
+     "Draft",
+     "Closed"
+    ],
+    "rule": "One word, one tone, on every screen. Status is always dot (office) or icon (floor) plus the word, never colour alone."
+   }
+  },
+  "role": {
+   "bg": {
+    "value": "{neutral.0}",
+    "note": "page"
+   },
+   "surface": {
+    "value": "#FFFFFF"
+   },
+   "surface-alt": {
+    "value": "{neutral.50}",
+    "note": "zebra and hover rows"
+   },
+   "ink": {
+    "value": "{neutral.950}"
+   },
+   "text-muted": {
+    "value": "{neutral.600}",
+    "contrast": "6.3 on bg"
+   },
+   "text-faint": {
+    "value": "#666C73",
+    "contrast": "5.2 on bg, 4.5 on the hover row",
+    "replaces": "#8D8982 (3.48, failed)"
+   },
+   "quiet-zero": {
+    "value": "{text-faint}",
+    "note": "zeros stay quiet but readable; base used #D2CFC9 at 1.5:1 which fails"
+   },
+   "border": {
+    "value": "{neutral.200}",
+    "note": "decorative hairline, exempt from contrast"
+   },
+   "border-strong": {
+    "value": "{neutral.300}",
+    "note": "decorative"
+   },
+   "border-control": {
+    "value": "#8E939B",
+    "contrast": "3.0 on bg and white only; 2.8 on zebra rows, so controls sit on bg or surface, never on striped rows"
+   },
+   "primary": {
+    "value": "{espresso.700}",
+    "contrast": "9.1 on bg; white label 9.3"
+   },
+   "on-primary": {
+    "value": "#FFFFFF"
+   },
+   "link": {
+    "value": "#A65700",
+    "note": "underlined ochre; base #B0610F measured 4.49 on bg and 4.22 on zebra rows, so it is darkened slightly"
+   },
+   "kpi": {
+    "value": "{espresso.700}"
+   },
+   "never-as-text": {
+    "value": "{caramel.*}",
+    "note": "caramel is decoration only (3.4:1)"
+   },
+   "focus-ring": {
+    "value": "{ink}",
+    "note": "2px ink ring with a 2px white gap, no blue"
+   },
+   "scrim": {
+    "value": "rgba(19,22,24,0.40)",
+    "note": "behind modals and the form panel; decoration, no text on it"
+   },
+   "tooltip": {
+    "bg": "{ink}",
+    "text": "#FCFCFC",
+    "contrast": "17.7:1 text, 11.7:1 hint #CCD0D5"
+   }
+  },
+  "gradient": {
+   "sidebar": {
+    "value": "linear-gradient(180deg,#2E1806 0%,#261304 25%,#1E0E03 50%,#160A02 75%,#0F0601 100%)",
+    "text": "cream #F3EBDD 14.2:1, labels #CDBBA3 9.0:1 at the lightest stop",
+    "approved": true
+   },
+   "phone-header": {
+    "value": "linear-gradient(180deg,#241609 0%,#2E1B0C 25%,#38210E 50%,#432611 75%,#4E2C14 100%)",
+    "text": "cream 10.5:1, labels 6.6:1",
+    "approved": true
+   },
+   "raised-surface": {
+    "value": "linear-gradient(180deg,#FFFFFF,#F7F5F2)"
+   },
+   "topbar": {
+    "value": "linear-gradient(180deg,{bg},#FCFBF9)"
+   },
+   "section-rule": {
+    "value": "linear-gradient(90deg,#D9A65E,#693C1B)",
+    "note": "2px, decorative"
+   },
+   "grain": {
+    "value": null,
+    "note": "dropped by owner 2026-11-05; add 1 to 2% only if banding shows on a real screen"
+   },
+   "rules": "Gradients only on sidebar, phone header, section rules, progress fill. Never on buttons (B0 is flat), tables, charts, text blocks, floor lists, kitchen boards, disabled states.",
+   "progress-fill-brown": {
+    "value": "linear-gradient(90deg,#8C6230,#693C1B)",
+    "contrast": "4.2 to 7.2 vs track #E0E3E6",
+    "note": "fill only, never text; start darkened from #D9A65E (1.7:1, failed 3:1)"
+   },
+   "progress-fill-olive": {
+    "value": "linear-gradient(90deg,#2F6438,#658914)",
+    "contrast": "5.4 to 3.2 vs track #E0E3E6",
+    "note": "fill only, never text. Olive here is a display colour, it does not mean success; show the number beside the bar"
+   },
+   "progress-fill-rule": "More fill colours may be added later; each must be 3:1 against the track (WCAG 1.4.11)."
+  },
+  "avatar": {
+   "on-dark": {
+    "fill": "rgba(243,235,221,0.14)",
+    "ring": "rgba(243,235,221,0.30)",
+    "initials": "#F3EBDD",
+    "contrast": "7.1 worst"
+   },
+   "on-light": {
+    "fill": "#F8F2EC",
+    "ring": "#DDBE9E",
+    "initials": "#693C1B",
+    "contrast": "8.4"
+   },
+   "sizes": {
+    "sm": 28,
+    "md": 44
+   },
+   "approved": true
+  },
+  "brand-moments-only": {
+   "gold": "#D9B734",
+   "olive": "#658914",
+   "cream": "#E7DDA3",
+   "note": "logo, login, loading animation, empty-state art, app icon, printouts. Never to mean a status."
+  },
+  "neutral": {
+   "0": {
+    "value": "#FCFCFC"
+   },
+   "50": {
+    "value": "#F4F5F7"
+   },
+   "100": {
+    "value": "#EBEDF0"
+   },
+   "200": {
+    "value": "#E0E3E6"
+   },
+   "300": {
+    "value": "#CCD0D5"
+   },
+   "400": {
+    "value": "#9EA4AC"
+   },
+   "500": {
+    "value": "#7A8087"
+   },
+   "600": {
+    "value": "#5A5F66"
+   },
+   "700": {
+    "value": "#40444A"
+   },
+   "800": {
+    "value": "#292C30"
+   },
+   "950": {
+    "value": "#131618"
+   }
+  }
+ },
+ "font": {
+  "office-sans": "Geist, system-ui, sans-serif",
+  "office-mono": "Geist Mono, ui-monospace, monospace",
+  "floor": "system-ui, sans-serif",
+  "numbers": "tabular-nums on every number",
+  "pinned": "Geist v1.8.2 (v1.9.x too new); 30 kB subset budget UNMEASURED"
+ },
+ "text": {
+  "label": {
+   "size": 11,
+   "leading": 14,
+   "tracking": "0.04em",
+   "family": "mono",
+   "case": "uppercase",
+   "use": "mono uppercase labels ONLY"
+  },
+  "caption": {
+   "size": 12,
+   "leading": 16
+  },
+  "body-sm": {
+   "size": 13,
+   "leading": 18,
+   "use": "dense tables, 28px rows (approved)"
+  },
+  "body": {
+   "size": 14,
+   "leading": 20,
+   "use": "prose"
+  },
+  "section": {
+   "size": 15,
+   "leading": 20,
+   "weight": 600
+  },
+  "title": {
+   "size": 24,
+   "leading": 30,
+   "weight": 600,
+   "tracking": "-0.01em"
+  },
+  "kpi": {
+   "size": 28,
+   "leading": 34,
+   "weight": 600
+  },
+  "floor-min": {
+   "body": 16,
+   "tertiary": 12,
+   "tappable": 14
+  },
+  "weights": [
+   400,
+   500,
+   600
+  ]
+ },
+ "space": {
+  "unit": 4,
+  "scale": [
+   0,
+   1,
+   2,
+   4,
+   6,
+   8,
+   12,
+   16,
+   20,
+   24,
+   32,
+   40,
+   48,
+   56,
+   64
+  ]
+ },
+ "size": {
+  "row": {
+   "compact": 28,
+   "default": 32,
+   "comfortable": 40,
+   "floor": 56
+  },
+  "touch-min": {
+   "value": 48,
+   "note": "phone and floor layouts only; the office layout is always 28 px (owner 2026-11-05)"
+  },
+  "pointer-min": {
+   "value": 28,
+   "note": "office layout minimum; also the office control height"
+  },
+  "target-gap": 8,
+  "floor-primary-action": 56,
+  "avatar": {
+   "sm": 28,
+   "md": 44
+  },
+  "control": {
+   "office": 28,
+   "phone": 48,
+   "floor": 56,
+   "tab-office": 32,
+   "tab-phone": 48,
+   "note": "height of buttons, fields, rows of choice controls; size follows the layout, never the pointer"
+  },
+  "icon": {
+   "office": 16,
+   "touch": 20,
+   "numberpad-delete": 24,
+   "stroke": 1.5,
+   "library": "Lucide",
+   "note": "names UNVERIFIED against the package"
+  },
+  "shell": {
+   "sidebar": 236,
+   "rail": 56,
+   "global-bar": 48,
+   "phone-header": 56,
+   "tab-bar": 56,
+   "drawer": 320,
+   "rail-under-px": 1280
+  },
+  "panel": {
+   "detail": 460,
+   "form": 520,
+   "command-palette": 640,
+   "modal-confirm": 440,
+   "toast": 360,
+   "tooltip-max": 240
+  },
+  "numberpad-key": {
+   "phone": 48,
+   "floor": 56,
+   "gap": 8,
+   "action-key": "tall, 3 rows, bottom right"
+  },
+  "stepper": {
+   "office": 28,
+   "phone": 48,
+   "floor": 56
+  },
+  "date-cell": {
+   "office": {
+    "width": 32,
+    "height": 28
+   },
+   "phone": {
+    "width": 48,
+    "height": 44
+   }
+  },
+  "progress": {
+   "office": 6,
+   "phone": 8
+  },
+  "list-row": {
+   "phone": 56,
+   "phone-worklist": 64,
+   "phone-detail-row": 48
+  }
+ },
+ "radius": {
+  "table-and-panes": {
+   "value": 0,
+   "approved": true
+  },
+  "control": {
+   "value": 4,
+   "approved": true,
+   "note": "inputs, tabs, menu items and checkboxes (approved, kept 4 px on 2026-11-05)"
+  },
+  "floating": {
+   "value": 6,
+   "approved": true,
+   "note": "menus, popovers, sheets, modals, toasts"
+  },
+  "full": {
+   "value": 9999,
+   "note": "avatars, status dots, count badges only"
+  },
+  "button": {
+   "value": 0,
+   "approved": true,
+   "note": "owner 2026-11-05; may change later"
+  }
+ },
+ "elevation": {
+  "surface": "none, hairline border",
+  "raised": "0 1px 2px rgba(23,21,18,.06), 0 0 0 1px rgba(23,21,18,.05)",
+  "floating": "0 4px 12px rgba(23,21,18,.10), 0 1px 3px rgba(23,21,18,.08), 0 0 0 1px rgba(23,21,18,.06)",
+  "modal": "0 16px 40px rgba(23,21,18,.16), 0 2px 6px rgba(23,21,18,.08), 0 0 0 1px rgba(23,21,18,.06)",
+  "rule": "Floor lists use borders, never shadows. Shadows only on floating layers. Values are PROPOSED, not yet judged visually."
+ },
+ "glass": {
+  "levels": {
+   "thin": {
+    "fill": "rgba(252,252,252,0.72)",
+    "blur": 12
+   },
+   "regular": {
+    "fill": "rgba(252,252,252,0.86)",
+    "blur": 20
+   }
+  },
+  "only-on": "menus, popovers, toolbar, sheets, modals on office laptops",
+  "never-on": "sidebar, working panes, floor devices",
+  "fallback": "solid #FFFFFF when prefers-reduced-transparency or no backdrop-filter",
+  "blur-max": 20
+ },
+ "motion": {
+  "ease-out": "cubic-bezier(0.23,1,0.32,1)",
+  "ease-in-out": "cubic-bezier(0.77,0,0.175,1)",
+  "drawer": "cubic-bezier(0.32,0.72,0,1)",
+  "duration": {
+   "fast": 120,
+   "base": 200,
+   "slow": 320
+  },
+  "press-scale": 0.98,
+  "press-ms": "100-160",
+  "stagger-ms": "30-80, max total 300, never on floor lists",
+  "animate-only": "transform and opacity",
+  "banned": "ease-in on UI, transition: all, scale(0) entrances",
+  "reduced-motion": "fades only, never zero feedback",
+  "loading": "no generic spinners; skeleton plus one signature animation after 300ms, held 500ms",
+  "press-scale-note": "0.98 as approved on the earlier token board; guideline draft B1 said 0.97 (Emil). Decide on the prototype.",
+  "timing": {
+   "press-ms": "100-160",
+   "pin-shake-ms": 400,
+   "tooltip-open-ms": 500,
+   "tooltip-skip-ms": 800,
+   "toast-saved-fade-ms": 4000,
+   "toast-undo-ms": 8000,
+   "modal-open-ms": 200,
+   "modal-close-ms": 120,
+   "panel-open-ms": 320,
+   "skeleton-pulse": "opacity 1 to 0.6 over 1.4 s",
+   "signature-slot-delay-ms": 300,
+   "signature-min-hold-ms": 500,
+   "slow-load-ms": 10000,
+   "row-arrival-tint-ms": 200
+  }
+ },
+ "z": {
+  "base": 0,
+  "sticky": 10,
+  "sidebar": 20,
+  "dropdown": 30,
+  "sheet": 40,
+  "modal": 50,
+  "toast": 60
+ },
+ "breakpoint": {
+  "phone": 360,
+  "tablet": 768,
+  "laptop": 1024,
+  "wide": 1440
+ },
+ "opacity": {
+  "disabled": 0.45,
+  "hover-tint": 0.06,
+  "pressed-tint": 0.1
+ },
+ "focus": {
+  "ring": "2px ink ring, 2px white gap",
+  "visible": "keyboard only (:focus-visible)"
+ },
+ "pin": {
+  "digits": 4,
+  "lockout": false,
+  "delay": false,
+  "admin-notice-after-wrong-tries": 10,
+  "notified": "System Admin only",
+  "weak-pins-allowed": true,
+  "submit": "on the 4th digit, no Done key",
+  "note": "Owner decision 2026-11-05, to be hardened later. Reverses architecture.md section 8 (6 digits, five tries then 15 minutes). Risks in decision-log L."
+ },
+ "format": {
+  "money": "KSh 1,250",
+  "date": "12 Mar 2024",
+  "time": "24-hour HH:mm",
+  "week-starts": "Monday",
+  "time-zone": "Africa/Nairobi (stored in UTC)"
+ },
+ "layout": {
+  "page": "fills the width, 24 px gutters",
+  "form-desktop": "520 px right panel, never a full page",
+  "component-widths": "field about 360 px, paragraph at most 640 px",
+  "phone-below-px": 768
+ }
+}

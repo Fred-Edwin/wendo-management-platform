@@ -76,7 +76,7 @@ Roles are assigned per person **per branch**. One person can hold several roles 
 - **Hosting:** DigitalOcean droplets for everything (production plus staging), with Cloudflare's free plan in front (decision log I5). *The owner's preference. The same bundle runs on a branch machine.*
 - **Money is stored as whole cents; everything a guest pays is whole shillings. No service charge. Menu prices include VAT** (decision log B5, B6, B12).
 - Multi-company door left open cheaply with a company ID on every record. *No second company is planned.*
-- Waiters keep their own cash tally. The system shows expected cash per waiter only to the manager, director and accountant. Waiters see order totals but no running total. *An independent check against theft.*
+- Waiters keep their own cash tally. The system shows expected cash per waiter only to the manager, director and accountant. Waiters see the running total while they build an order and the totals of submitted orders and Bills, but never cash or M-Pesa collected per waiter, expected handover, or an end-of-day cash summary. *An independent check against theft.*
 - Cards use a separate bank terminal and the waiter records the approval code. *No card integration to build.*
 - M-Pesa payments are **recorded by hand at first**: the guest pays to the pay-bill and the waiter keys in the code. The entry is "pending verification", counts as paid, and the accountant verifies it against the M-Pesa statement; a Branch Manager, the accountant or a Director may reject or flag it. Automatic M-Pesa integration comes later. *Prevents fake or reused codes.*
 - Approvals: Branch Manager or Director only, never Department Heads. No acting manager: a Director covers an absence. *Owner's decision.*
