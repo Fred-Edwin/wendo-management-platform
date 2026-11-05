@@ -6,6 +6,7 @@ Restaurant management for Wendo Coffee and Bistro (3 branches, up to 10). Built 
 - `docs/agent-experience.md`: how we work (checks, memory, tests, file names, rules and their tools). Read this first.
 - `docs/domain-model.md`: the glossary (use these words in code) and the 20 rules in section 6.
 - `docs/feature-shape.md`: what one feature folder looks like.
+- `docs/design-system.md`: the design system. Read it before any UI work: tokens, components, page patterns, UI rules and the component names. Tokens are in `docs/design-tokens.json`. Section L of the decision log records the decisions.
 - `docs/architecture.md`: the design. `docs/decision-log.md` wins where they differ (section J, then K).
 - `docs/product-brief.md`: what the product is.
 
@@ -35,6 +36,7 @@ These tools are specified, and some do not exist yet. If a command is missing, s
 12. Tests: heavy on money, permissions, payments, approvals and the offline queue; light on simple screens. Every test must answer "what real behaviour breaks if this is deleted?". Use the real database, and test data with two companies.
 13. A rule from the domain model is only done when a tool enforces it and the rule-break suite proves it.
 14. Error messages and lint messages must name the fix.
+15. UI: assemble screens from the components and patterns in `docs/design-system.md`. If a part you need is not there, stop and open a component request issue; do not draw it, build it inside a feature, or copy something similar.
 
 ## Done means
 - `pnpm check` exits 0 (with `--db` if you touched data).
