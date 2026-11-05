@@ -156,7 +156,7 @@ Tokens reset with `--*: initial` so only defined tokens exist; closed primitives
 - Buttons name the effect and the count ("Refund KSh 1,250", "Send 89 payslips"). The safe option is "Cancel", "Not yet" or "Keep editing", never "No".
 - The glossary's "Approval" covers cancel, comp, discount and refund. The designs also approve pay changes and similar HR requests; the glossary needs an entry for these (decision-log L, open items).
 
-## 11. Known gaps (see decision-log L for decisions and risks)
+## 11. Known gaps (see decision-log L for decisions and risks; the full backlog is `docs/design-deferred.md`)
 
 - **Not designed, required later (agents stop and ask):** Tile (menu item, table), the floor shell (waiter and kitchen devices), print layouts (receipt, kitchen ticket, payslip), the schedule grid and calendar, charts and sparklines, the signature loading animation (deferred).
 - **Unmeasured or unverified:** Geist subset size against 30 kB (download declined), Base UI, Motion, Sonner and cmdk sizes against the 130 kB JS and 15 kB CSS budgets, blur cost, press feel and the 0.98 versus 0.97 scale, contrast in bright light and in the kitchen, the 12 px tab labels in sunlight, the logo badge at 28 px, quiet row arrival with people, the drawer with 20 or more links, tabular figures in Geist, the Lucide icon names and paths, how office tables get their data, offline behaviour of approvals. The full contrast table and size audit were skipped by the owner in this session.
