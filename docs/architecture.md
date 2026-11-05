@@ -4,6 +4,7 @@ This is the base design chosen in Session 3. Where `docs/decision-log.md` sectio
 - Folders are `features/floor/<name>` and `features/company/<name>`, with fixed file endings (J6), not a flat `features/<name>` with a `side` field.
 - The cloud supports branch versions N, N-1 and N-2, not only N-1.
 - Remote actions on a branch run by its own server are forwarded to the branch writer, and approval decisions are branch records (J10).
+- **Updated 2026-11-05 for decision-log section L (design system), which wins where it differs:** the PIN is 4 digits with no lock-out (L-10, sections 4 and 8), the component library is Base UI (L-9, section 4), the theme is light only for now and there are three easing curves (L-2, L-8, section 7), and the status primitive is `StatusLabel` (L-16, section 7). The components, patterns and rules are in `docs/design-system.md`.
 - A written fallback exists for the same-address DNS trick (J8).
 - Remote access starts with Tailscale (J11). Floor sessions last 12 hours. Docker is not used on droplets or branch servers (J5).
 - Ideas borrowed from the other designs are listed in J.
@@ -71,9 +72,9 @@ Versions: pinned list from decision log A unless stated. Other versions were rea
 | Installer and imaging | Debian 13 minimal image built in CI; `wendo-install <branch-code>` enrols the machine | Pre-imaged spare in one command (G13) | Hand-built machines | |
 | Cutover | Ops dashboard action with writer-epoch fencing and a DNS switch (§8) | | | |
 | Update compatibility | Expand-only migrations, a sync protocol version window N and N-1, a CI compatibility job running the new cloud against the old branch image | §8 | Lock-step upgrades | |
-| Offline staff login | Device token plus 6-digit PIN, checked by a database function on the branch server against replicated, hashed credentials | §8 | Cloud-only login | |
+| Offline staff login | Device token plus 4-digit PIN (was 6 digits; decision-log L-10), checked by a database function on the branch server against replicated, hashed credentials | §8 | Cloud-only login | |
 | Sessions and "who is asking" | **Database-issued signed session tokens**, verified inside Postgres on every transaction (G6, §6) | | Plain `SET app.user_id` (fails G6) | |
-| Components | React Aria Components 1.22 for hard widgets (dialog, menu, combobox, date), our own simple primitives for buttons, lists and tiles | Accessible, headless, tree-shakeable; the look stays ours | MUI, Mantine (heavy runtime styles), shadcn (fine, but Radix plus copying adds weight and drift) | npm 2026-11-04 |
+| Components | Base UI for hard widgets (dialog, menu, combobox; replaces React Aria Components 1.22, decision-log L-9; the date and time pickers are decided in the foundation build), our own simple primitives for buttons, lists and tiles (the full set is in `docs/design-system.md`) | Accessible, headless, tree-shakeable; the look stays ours | MUI, Mantine (heavy runtime styles), shadcn (fine, but Radix plus copying adds weight and drift) | npm 2026-11-04 |
 | Styling and tokens | Tailwind CSS 4.3 with tokens defined once in `core/ui/tokens.css` (`@theme`), compiled by Lightning CSS. Arbitrary colour and spacing values are banned by a check | No runtime CSS, small output, agents write it well | CSS-in-JS (runtime cost), vanilla-extract (more files per component) | |
 | Lists | `@tanstack/react-virtual` 3.14 inside `core/ui/List` (virtualises above 60 rows) | Long lists stay at 60 fps on a slow phone | react-window | |
 | Offline shell | `vite-plugin-pwa` 2.0 (Workbox 7.4) precache | App loads with no network (C(d)) | Hand-written service worker | |
@@ -115,7 +116,7 @@ wendo/
 │  ├─ print/                     PrintJob, print adapter, drivers (relay, webserial, fake), ESC/POS builder
 │  ├─ notify/                    in-app banners, optional Web Push when online
 │  ├─ jobs/                      graphile-worker wiring; features add tasks in their jobs/ folder
-│  └─ ui/                        tokens.css, primitives, List, Sheet, Toast, AppShell, role navigation
+│  └─ ui/                        tokens.css, primitives, List, Sheet, Toast, AppShell, role navigation, catalogue route
 ├─ web/                          SPA entry: index.html (inline skeleton), main.tsx, sw.ts, router assembly
 ├─ server/                       main.ts (modes: cloud, branch), Hono app assembly, SSE, static files
 ├─ ops/
@@ -272,7 +273,7 @@ All IDs are UUIDv7 made on the device (rule 13). Every table has `company_id`. B
 1. **The database issues sessions.** `auth.login(identifier, secret, device_token)` is a `SECURITY DEFINER` function owned by `auth_owner`. It checks the bcrypt hash (pgcrypto `crypt`), the device and the postings, then returns a token: claims (`session_id`, `person_id`, `device_id`, `expires_at`, `kind`) plus an HMAC-SHA256 signature made with a key in `auth.keys`. The app role **cannot read** that table.
 2. **Every transaction presents the token.** The runner calls `SET LOCAL app.session = '<token>'`. `core.actor()` (also `SECURITY DEFINER`) checks the signature, expiry, the `sessions` row (not revoked) and `suspensions`, once per transaction (cached in a transaction-local setting). With no valid token, every policy returns nothing and every write fails.
 3. **The app role is narrow.** No `BYPASSRLS`, no table ownership, no DDL, no access to `auth.*`, INSERT-only on append-only tables. Migrations run as a separate `migrator` role used only by the deploy step.
-4. **Step-up for sensitive acts.** Approvals, refunds, verification and posting changes require a `kind = 'stepup'` token less than 60 seconds old, minted by `auth.stepup(session, pin)`.
+4. **Step-up for sensitive acts.** Approvals, refunds, verification and posting changes require a `kind = 'stepup'` token less than 60 seconds old, minted by `auth.stepup(session, pin)`. The step-up PIN is the same 4-digit PIN with no lock-out (decision-log L-10), so it is the only thing between a picked-up phone and a money action; the recorded risks and the hardening options are in L-10.
 
 **What remains possible for a hijacked app server:** acting as any user whose token passes through it while it is compromised (tokens are bearer tokens in transit), and capturing PINs or passwords typed during that time. It **cannot** mint a session for someone who has not logged in, raise a user's postings, bypass the walls, alter audit or payment history, or approve without a fresh step-up.
 
@@ -284,7 +285,7 @@ All IDs are UUIDv7 made on the device (rule 13). Every table has `company_id`. B
 
 **Shell and routes.** One SPA. `web/main.tsx` builds the router from every feature's `ui/routes.ts`. The navigation shows only routes whose `roles` match the user's postings. Each screen is a lazy chunk. The waiter's start screen is preloaded right after login. Role "apps" (waiter, station, manager, office) are route groups with their own layout, so a kitchen tablet never downloads office code.
 
-**Components and tokens.** `core/ui/tokens.css` defines colour (light, dark for stations, and a high-contrast kitchen theme), spacing (4 px grid), radius, type scale, elevation and motion (durations 120, 200 and 320 ms; one easing). Tailwind reads only these tokens. The design-system session (I7) fills the values; the structure is fixed now. Primitives in `core/ui`: `Button` (pressed state within one frame), `Tile`, `List`, `Sheet`, `Toast`, `NumberPad`, `MoneyText` (formats `Shillings` only), `StatusDot` (saved, sending, waiting, flagged). Motion uses only `transform` and `opacity`, and respects `prefers-reduced-motion`.
+**Components and tokens.** `core/ui/tokens.css` is generated from `docs/design-tokens.json` and defines colour (light only for now; the dark station theme and a high-contrast kitchen theme are deferred, decision-log L-2), spacing (4 px grid), radius, type scale, elevation and motion (durations 120, 200 and 320 ms; three curves: ease-out, ease-in-out and drawer, L-8). Tailwind reads only these tokens. The design-system session (I7) is done: the values, the components and the page patterns are in `docs/design-system.md`. Primitives in `core/ui` include `Button` (pressed state within one frame), `Tile` (not yet designed), `List`, `Sheet`, `Toast`, `NumberPad`, `MoneyText` (formats `Shillings` only) and `StatusLabel` (named `StatusDot` here before; saved, sending, waiting, flagged), plus the data table, which is named `DataTable` because the glossary reserves "Table". Motion uses only `transform` and `opacity`, and respects `prefers-reduced-motion`.
 
 **Screens that update instantly, then confirm.**
 
@@ -363,7 +364,7 @@ Estimate for P1: React and React DOM about 60 kB, router about 13 kB, Valibot 2 
 6. Check after apply on the cloud: triggers (overpay, approvals) run again; a violation quarantines the row instead of blocking.
 7. The same `core.changes` sequence drives `/floor/stream` for devices, so screens and the cloud read one list.
 
-**Staff login without internet.** Devices are registered by a Branch Manager (a device token in the phone's storage and `devices`). Floor login is a person picker plus a 6-digit PIN, checked by `auth.login` in the branch database against the replicated hash. Five wrong PINs lock the person on that device for 15 minutes. Company login (password) happens in the cloud at `app.wendo.co.ke`.
+**Staff login without internet.** Devices are registered by a Branch Manager (a device token in the phone's storage and `devices`). Floor login is a person picker plus a 4-digit PIN, checked by `auth.login` in the branch database against the replicated hash. There is no lock-out and no delay after wrong PINs; after 10 wrong tries for one person the System Admin, and only the System Admin, is notified (owner decision 2026-11-05, to be hardened later; decision-log L-10). With 10,000 possible PINs, a leaked hash copy can be worked out, so the risks in L-10 apply. (This replaces: 6 digits, five wrong PINs lock the person on that device for 15 minutes.) Company login (password) happens in the cloud at `app.wendo.co.ke`.
 
 **Suspended or ended staff at an offline branch (recommendation for I11).** A Branch Manager can **suspend locally, effective at once** (a `suspensions` row checked by `core.actor()` on every transaction). Floor sessions expire after 12 hours and are re-checked against local postings at every use. An HR change in the cloud reaches the branch within seconds when the link is up. During an outage, the HR change waits; the manager's local suspension covers the gap. Worst case if nobody suspends locally: access until the link returns or the 12-hour session ends.
 

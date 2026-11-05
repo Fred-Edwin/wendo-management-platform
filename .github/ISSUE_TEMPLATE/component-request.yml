@@ -1,0 +1,62 @@
+name: Component request
+description: A UI part is missing from the design system. Ask for it here; do not build it inside a feature.
+title: "[component] name of the part"
+labels: ["component-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check `docs/design-system.md` (sections 6 and 7) and the Paper index board first. If the part exists, use it. If something almost fits, say what is missing. A missing part is designed in Paper, then built as a small separate change to `core/ui` (rule 9), then used by your feature.
+  - type: input
+    id: name
+    attributes:
+      label: Part needed
+      description: A short name, for example "Tile (menu item)" or "Schedule grid".
+    validations:
+      required: true
+  - type: input
+    id: feature
+    attributes:
+      label: Feature that needs it
+      description: Folder name, for example floor/orders or company/schedule.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What it must do and why
+      description: The behaviour wanted and who uses it, in plain words.
+    validations:
+      required: true
+  - type: textarea
+    id: almost
+    attributes:
+      label: What exists that almost fits
+      description: Name the nearest component or pattern in docs/design-system.md and what it cannot do. Write "nothing" if nothing is close.
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where it is used
+      multiple: true
+      options:
+        - Office layout
+        - Phone layout
+        - Floor device
+    validations:
+      required: true
+  - type: textarea
+    id: states
+    attributes:
+      label: States and worst-case content
+      description: Loading, empty, error, disabled; long names, large amounts, 1,000 rows.
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Checked
+      options:
+        - label: I looked in docs/design-system.md and it is not there.
+          required: true
+        - label: I did not build a stand-in inside the feature.
+          required: true
